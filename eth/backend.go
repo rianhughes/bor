@@ -107,7 +107,7 @@ type Ethereum struct {
 	closeCh chan struct{} // Channel to signal the background processes to exit
 
 	shutdownTracker *shutdowncheck.ShutdownTracker // Tracks if and when the node has shutdown ungracefully
-	ofacHandle      ofac.Handler
+	ofacHandle      *ofac.Handler
 }
 
 // New creates a new Ethereum object (including the
@@ -171,7 +171,7 @@ func New(stack *node.Node, config *ethconfig.Config) (*Ethereum, error) {
 		p2pServer:         stack.Server(),
 		closeCh:           make(chan struct{}),
 		shutdownTracker:   shutdowncheck.NewShutdownTracker(chainDb),
-		ofacHandle:        ofac.Handler{Chan: make(chan *types.Transaction)},
+		ofacHandle:        &ofac.Handler{Chan: make(chan *types.Transaction)},
 	}
 
 	// START: Bor changes

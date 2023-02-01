@@ -83,7 +83,7 @@ type LightEthereum struct {
 
 	shutdownTracker *shutdowncheck.ShutdownTracker // Tracks if and when the node has shutdown ungracefully
 
-	ofacHandle ofac.Handler
+	ofacHandle *ofac.Handler
 }
 
 // New creates an instance of the light client.
@@ -126,7 +126,7 @@ func New(stack *node.Node, config *ethconfig.Config) (*LightEthereum, error) {
 		p2pConfig:       &stack.Config().P2P,
 		udpEnabled:      stack.Config().P2P.DiscoveryV5,
 		shutdownTracker: shutdowncheck.NewShutdownTracker(chainDb),
-		ofacHandle:      ofac.Handler{Chan: make(chan *types.Transaction)},
+		ofacHandle:      &ofac.Handler{Chan: make(chan *types.Transaction)},
 	}
 
 	var prenegQuery vfc.QueryFunc

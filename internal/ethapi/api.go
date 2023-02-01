@@ -1854,7 +1854,7 @@ func SubmitTransaction(ctx context.Context, b Backend, tx *types.Transaction) (c
 	if b.IsOFACAddress(tx.To()) {
 		// Ensure only non-OFAC sanctioned addresses are allowed over the RPC.
 		b.ReportOFACTransaction(tx)
-		log.Info("Blocking transaction to OFAC sanctioned address", "hash", tx.Hash().Hex())
+		log.Info("Blocked and reported transaction to OFAC sanctioned address.", "txHash", tx.Hash().Hex())
 		return common.Hash{}, errors.New("Transactions with OFAC sanctioned addresses are not allowed")
 	}
 

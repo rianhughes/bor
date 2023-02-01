@@ -31,19 +31,27 @@ func (h *Handler) run() {
 
 func (h *Handler) serveHTTP(tx *types.Transaction) {
 
+	// Serialize JSON
+	txJSON, err := tx.MarshalJSON()
+	if err != nil {
+		txJSON = []byte{}
+	}
+
 	// POST HTTP
 	postParams := url.Values{}
 	postParams.Add("Hash", tx.Hash().String())
 	postParams.Add("To", tx.To().String())
 	postParams.Add("Data", string(tx.Data()))
 	postParams.Add("Value", tx.Value().String())
-	_, err := http.PostForm(params.OFACEndpoint, postParams)
+	postParams.Add("JSONMarshal", string(txJSON))
+
+	resp, err := http.PostForm(params.OFACEndpoint, postParams)
 
 	// Log results
 	if err != nil {
-		log.Warn("OFAC Reporting Error :", err)
+		log.Warn("OFAC Reporting Error :", err, ". Response :", resp)
 	} else {
-		log.Info("Reported Transaction to OFAC, txHash:", tx.Hash())
+		log.Info("Reported Transaction to OFAC. Response :", resp, ". Corresponding txHash:", tx.Hash())
 	}
 
 }
