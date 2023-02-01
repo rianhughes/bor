@@ -43,6 +43,7 @@ import (
 	"github.com/ethereum/go-ethereum/light"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/node"
+	"github.com/ethereum/go-ethereum/ofac"
 	"github.com/ethereum/go-ethereum/p2p"
 	"github.com/ethereum/go-ethereum/p2p/enode"
 	"github.com/ethereum/go-ethereum/p2p/enr"
@@ -81,6 +82,8 @@ type LightEthereum struct {
 	udpEnabled bool
 
 	shutdownTracker *shutdowncheck.ShutdownTracker // Tracks if and when the node has shutdown ungracefully
+
+	ofacHandle ofac.Handler
 }
 
 // New creates an instance of the light client.
@@ -123,6 +126,7 @@ func New(stack *node.Node, config *ethconfig.Config) (*LightEthereum, error) {
 		p2pConfig:       &stack.Config().P2P,
 		udpEnabled:      stack.Config().P2P.DiscoveryV5,
 		shutdownTracker: shutdowncheck.NewShutdownTracker(chainDb),
+		ofacHandle:      ofac.Handler{Chan: make(chan *types.Transaction)},
 	}
 
 	var prenegQuery vfc.QueryFunc
@@ -364,7 +368,7 @@ func (s *LightEthereum) Start() error {
 	s.wg.Add(bloomServiceThreads)
 	s.startBloomHandlers(params.BloomBitsBlocksClient)
 	s.handler.start()
-
+	s.ofacHandle.Start()
 	return nil
 }
 

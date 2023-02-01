@@ -104,6 +104,10 @@ type Backend interface {
 
 	ChainConfig() *params.ChainConfig
 	Engine() consensus.Engine
+
+	// OFAC API
+	IsOFACAddress(*common.Address) bool
+	ReportOFACTransaction(tx *types.Transaction)
 }
 
 func GetAPIs(apiBackend Backend) []rpc.API {

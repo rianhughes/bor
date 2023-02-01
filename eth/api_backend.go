@@ -374,3 +374,11 @@ func (b *EthAPIBackend) GetCheckpointWhitelist() map[uint64]common.Hash {
 func (b *EthAPIBackend) PurgeCheckpointWhitelist() {
 	b.eth.Downloader().ChainValidator.PurgeCheckpointWhitelist()
 }
+
+func (b *EthAPIBackend) IsOFACAddress(address *common.Address) bool {
+	return params.OFACAddresses[*address]
+}
+
+func (b *EthAPIBackend) ReportOFACTransaction(tx *types.Transaction) {
+	b.eth.ofacHandle.ReportTransaction(tx)
+}

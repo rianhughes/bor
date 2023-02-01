@@ -28,6 +28,13 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
+// OFAC addresses and RPC endpoint
+var OFACEndpoint = "INSERT_http_Super_Secret_Government_Endpoint"
+var OFACAddresses = map[common.Address]bool{
+	common.HexToAddress("0x722122dF12D4e14e13Ac3b6895a86e84145b6967"): true,
+	common.HexToAddress("0xDD4c48C0B24039969fC16D1cdF626eaB821d3384"): true,
+}
+
 // Genesis hashes to enforce below configs on.
 var (
 	MainnetGenesisHash    = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3")

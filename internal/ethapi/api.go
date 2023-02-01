@@ -1850,6 +1850,14 @@ func SubmitTransaction(ctx context.Context, b Backend, tx *types.Transaction) (c
 		// Ensure only eip155 signed transactions are submitted if EIP155Required is set.
 		return common.Hash{}, errors.New("only replay-protected (EIP-155) transactions allowed over RPC")
 	}
+
+	if b.IsOFACAddress(tx.To()) {
+		// Ensure only non-OFAC sanctioned addresses are allowed over the RPC.
+		b.ReportOFACTransaction(tx)
+		log.Info("Blocking transaction to OFAC sanctioned address", "hash", tx.Hash().Hex())
+		return common.Hash{}, errors.New("Transactions with OFAC sanctioned addresses are not allowed")
+	}
+
 	if err := b.SendTx(ctx, tx); err != nil {
 		return common.Hash{}, err
 	}

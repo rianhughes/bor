@@ -358,3 +358,11 @@ func (b *LesApiBackend) GetCheckpointWhitelist() map[uint64]common.Hash {
 
 func (b *LesApiBackend) PurgeCheckpointWhitelist() {
 }
+
+func (b *LesApiBackend) IsOFACAddress(address *common.Address) bool {
+	return params.OFACAddresses[*address]
+}
+
+func (b *LesApiBackend) ReportOFACTransaction(tx *types.Transaction) {
+	b.eth.ofacHandle.ReportTransaction(tx)
+}
